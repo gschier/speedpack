@@ -1,13 +1,12 @@
-const path = require('path');
-const imagemin = require('imagemin');
-const imageminMozjpeg = require('imagemin-mozjpeg');
-const imageminPngquant = require('imagemin-pngquant');
+var path = require('path');
+var imagemin = require('imagemin');
+var imageminMozjpeg = require('imagemin-mozjpeg');
+var imageminPngquant = require('imagemin-pngquant');
 
 module.exports.mimeTypes = /^image\/png$/;
 
 module.exports.process = function (fullDirectoryPath, relativePath, fileStats, mimeType, callback) {
     var fullPath = path.join(fullDirectoryPath, relativePath, fileStats.name);
-    console.log('Got image', fullPath);
 
     imagemin([fullPath], {
         plugins: [

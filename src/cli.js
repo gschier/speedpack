@@ -1,7 +1,7 @@
 var yargs = require('yargs');
 var path = require('path');
 var walk = require('walk');
-var parsers = require('./parsers');
+var compressors = require('./compressors');
 
 
 module.exports.go = function () {
@@ -47,7 +47,7 @@ module.exports.go = function () {
 
     walker.on('file', function (root, fileStats, next) {
         var relativePath = path.relative(fullDirectoryPath, root);
-        parsers.transform(fullDirectoryPath, relativePath, fileStats, next);
+        compressors.transform(fullDirectoryPath, relativePath, fileStats, next);
     });
 
     walker.on('errors', function (root, nodeStatsArray, next) {
@@ -56,6 +56,6 @@ module.exports.go = function () {
     });
 
     walker.on('end', function () {
-        console.log('all done');
+        // console.log('all done');
     });
 };

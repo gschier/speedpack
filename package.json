@@ -1,0 +1,23 @@
+{
+  "name": "slimpack",
+  "version": "0.0.1",
+  "description": "Minification and cleanup for generated static websites",
+  "bin": {
+    "slimpack": "./bin/cli"
+  },
+  "scripts": {},
+  "author": "Gregory Schier <greg@schier.co>",
+  "license": "MIT",
+  "dependencies": {
+    "imagemin": "^5.2.2",
+    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-pngquant": "^5.0.0",
+    "mime": "^1.3.4",
+    "walk": "^2.3.9",
+    "yargs": "^5.0.0",
+    "mkdirp": "latest"
+  },
+  "engines": {
+    "node": ">=4"
+  }
+}

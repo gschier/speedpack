@@ -1,5 +1,7 @@
 # Speedpack
 
+_NOTE: Do not use this yet please_
+
 Speedpack is meant to be a simple and user friendly tool to help fix common problems reported by
 [Google Page Speed Insights](https://developers.google.com/speed/pagespeed/). So far, it can do
 the following.

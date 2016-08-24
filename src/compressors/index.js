@@ -57,23 +57,15 @@ module.exports.transform = function (inputPath, outputPath, relativePath, fileSt
             outputs = Array.isArray(outputs) ? outputs : [outputs];
 
             var bytesWritten = 0;
-            var numWritten = 0;
 
             for (var i = 0; i < outputs.length; i++) {
-                (function (original) {
-                    fs.writeFile(fullDestinationPath, outputs[i], function (err) {
-                        if (!err) {
-                            bytesWritten += original.byteLength || original.length;
-                        }
-
-                        if (++numWritten === outputs.length) {
-                            // We're done
-                            var bytesSaved = inputBuffer.byteLength - bytesWritten;
-                            callback(null, compressor, bytesSaved);
-                        }
-                    });
-                })(outputs[i]);
+                fs.writeFileSync(fullDestinationPath, outputs[i]);
+                bytesWritten += outputs[i].byteLength || outputs[i].length;
             }
+
+            // We're done
+            var bytesSaved = inputBuffer.byteLength - bytesWritten;
+            callback(null, compressor, bytesSaved);
         });
     });
 };

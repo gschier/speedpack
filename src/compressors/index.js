@@ -16,16 +16,20 @@ var compressors = [
 module.exports.transform = function (inputPath, outputPath, relativePath, fileStats, callback) {
     var fullSourcePath = path.join(inputPath, relativePath, fileStats.name);
     var mimeType = mime.lookup(fullSourcePath);
-    var destinationBase = path.join(outputPath, relativePath);
-    var fullDestinationPath = path.resolve(path.join(destinationBase, fileStats.name));
 
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-    // Create the directory if it doesn't exist //
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+    // ~~~~~~~~~~~~~~~~~~~~~~ //
+    // Setup output directory //
+    // ~~~~~~~~~~~~~~~~~~~~~~ //
 
-    // This should be fast so just do it sync and avoid complexity
-    mkdirp.sync(destinationBase);
+    var fullDestinationPath = null;
+    if (outputPath) {
+        var destinationBase = path.join(outputPath, relativePath);
+
+        // This should be fast so just do it sync and avoid complexity
+        mkdirp.sync(destinationBase);
+        fullDestinationPath = path.resolve(path.join(destinationBase, fileStats.name));
+    }
 
 
     // ~~~~~~~~~~~~~~~~~ //
@@ -59,13 +63,16 @@ module.exports.transform = function (inputPath, outputPath, relativePath, fileSt
             var bytesWritten = 0;
 
             for (var i = 0; i < outputs.length; i++) {
-                fs.writeFileSync(fullDestinationPath, outputs[i]);
+                if (fullDestinationPath) {
+                    fs.writeFileSync(fullDestinationPath, outputs[i]);
+                } else {
+                    // Must be a dry-run
+                }
                 bytesWritten += outputs[i].byteLength || outputs[i].length;
             }
 
             // We're done
-            var bytesSaved = inputBuffer.byteLength - bytesWritten;
-            callback(null, compressor, bytesSaved);
+            callback(null, compressor, inputBuffer.byteLength, bytesWritten);
         });
     });
 };

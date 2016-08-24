@@ -4,6 +4,8 @@ _NOTE: Do not use this yet please_
 
 Speedpack is a command line tool to automatically compress and optimize a static website.
 
+![Speedpack CLI](http://imgur.com/645d0b2a-afb1-4005-821e-982111a890dd)
+
 
 ## Installation
 

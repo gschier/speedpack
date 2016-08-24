@@ -2,6 +2,18 @@
 
 _NOTE: Do not use this yet please_
 
+Speedpack is a command line tool to automatically compress and optimize a static website.
+
+
+## Installation
+
+```bash
+npm install -g speedpack
+```
+
+
+## More Details
+
 Speedpack is meant to be a simple and user friendly tool to help fix common problems reported by
 [Google Page Speed Insights](https://developers.google.com/speed/pagespeed/). So far, it can do
 the following.
@@ -18,17 +30,10 @@ And in the near future...
 - suggest fixes that should not be handled by this tool (missing title tags, etc)
 
 
-## Installation
-
-```bash
-npm install -g speedpack
-```
-
-
 ## Usage
 
 ```bash
-$ speedpack --help
+speedpack --help
 
   Usage: speedpack [options]
 

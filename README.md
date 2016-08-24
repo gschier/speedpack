@@ -37,12 +37,11 @@ And in the near future...
 ```bash
 speedpack --help
 
-  Usage: speedpack [options]
+  Usage: slimpack [options] <input>
 
   Options:
 
     -h, --help           output usage information
     -v, --version        output the version number
     -o, --output <path>  output directory
-    -i, --input <path>   input directory
-```
+

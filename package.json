@@ -1,9 +1,9 @@
 {
-  "name": "slimpack",
-  "version": "0.0.1",
-  "description": "Minification and cleanup for generated static websites",
+  "name": "speedback",
+  "version": "0.0.4",
+  "description": "Automatically compress and optimize a static website",
   "bin": {
-    "slimpack": "./bin/cli"
+    "speedpack": "./bin/cli"
   },
   "scripts": {},
   "author": "Gregory Schier <greg@schier.co>",

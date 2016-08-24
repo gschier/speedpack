@@ -9,24 +9,31 @@ var version = require('../package.json').version;
 module.exports.go = function () {
 
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+    // Initialize some useful variables //
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+    var startTime = Date.now();
+
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     // Configure the arguments parsing //
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
     program
         .version(version, '-v, --version')
-        .option('-o, --output <path>', 'Output directory', '_slim')
-        .option('-i, --input <path>', 'Input directory')
-        .option('-c, --config <path>', 'Secify configuration file')
-        .option('--overwrite', 'Allow overwriting of output directory')
+        .usage('[options] <input>')
+        .option('-o, --output <path>', 'output directory', '_slim')
+        .option('-c, --config <path>', 'specify configuration file')
         .parse(process.argv);
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     // Set up the directory to work on //
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
-    var outputPath = program.output || program.args[0];
-    var inputPath = program.input || program.args[1];
+    var inputPath = program.args[0];
+    var outputPath = program.output || program.args[1];
 
     if (!inputPath) {
         console.log('Input path not specified');
@@ -60,15 +67,19 @@ module.exports.go = function () {
         next();
     });
 
-    console.time('pack');
     walker.on('end', function () {
         var progress = new ProgressBar('packing [:bar] :percent', {
             total: allPaths.length,
+            width: 20,
             complete: '#',
             incomplete: '-'
         });
 
         var completed = 0;
+        var tracker = {};
+        var totalCount = 0;
+        var totalBytesSaved = 0;
+
         for (var i = 0; i < allPaths.length; i++) {
             var info = allPaths[i];
 
@@ -77,11 +88,42 @@ module.exports.go = function () {
                 outputPath,
                 info.relativePath,
                 info.fileStats,
-                function () {
+                function (err, compressor, bytesSaved) {
                     progress.tick();
-                    if (++completed === allPaths.length) {
-                        console.timeEnd('pack');
+
+                    if (!tracker.hasOwnProperty(compressor.fileType)) {
+                        tracker[compressor.fileType] = {
+                            count: 0,
+                            bytesSaved: 0
+                        };
                     }
+
+                    tracker[compressor.fileType].count++;
+                    tracker[compressor.fileType].bytesSaved += bytesSaved;
+                    totalCount++;
+                    totalBytesSaved += bytesSaved;
+
+                    if (++completed !== allPaths.length) {
+                        // Not done yet
+                        return;
+                    }
+
+                    // We're done!
+                    console.log('Finished in ' + (Date.now() - startTime) + 'ms');
+                    console.log('Compressed:');
+
+                    for (var fileType in tracker) {
+                        console.log(
+                            '  ' + fileType + ': ' + tracker[fileType].count +
+                                ' -> saved ' + tracker[fileType].bytesSaved + ' bytes'
+                        );
+                    }
+
+                    console.log('  -------------------------------');
+                    console.log(
+                        '  Total: ' + totalCount + ' -> saved ' +
+                        totalBytesSaved + ' bytes'
+                    );
                 }
             );
         }

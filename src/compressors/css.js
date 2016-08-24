@@ -1,14 +1,11 @@
-var path = require('path');
 var csso = require('csso');
-var fs = require('fs');
 
-module.exports.process = function (inputPath, relativePath, fileStats, mimeType, callback) {
-    var fullPath = path.join(inputPath, relativePath, fileStats.name);
+module.exports.fileType = 'CSS';
 
-    fs.readFile(fullPath, function (err, buffer) {
-        var compressedCss = csso.minify(buffer.toString()).css;
+module.exports.process = function (buffer, callback) {
+    var results = csso.minify(buffer.toString(), {sourceMap: 'file'});
+    var minified = results.css;
+    var sourceMap = results.map.toString();
 
-        callback(null, compressedCss);
-    });
+    callback(null, minified);
 };
-

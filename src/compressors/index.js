@@ -3,18 +3,22 @@ var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 
-var compressors = {
-    'application/javascript': require('./js'),
-    'text/css': require('./css'),
-    'image/png': require('./image')
-};
+var compressors = [
+    [require('./js'), /^(application|text)\/javascript$/],
+    [require('./css'), /^text\/css$/],
+    [require('./img'), /^image\/.*$/],
+
+    // Catch-all that just copies the file
+    [require('./copier'), /.*/]
+];
 
 
-module.exports.transform = function (inputPath, outputPath, relativePath, fileStats, next) {
+module.exports.transform = function (inputPath, outputPath, relativePath, fileStats, callback) {
     var fullSourcePath = path.join(inputPath, relativePath, fileStats.name);
     var mimeType = mime.lookup(fullSourcePath);
     var destinationBase = path.join(outputPath, relativePath);
     var fullDestinationPath = path.resolve(path.join(destinationBase, fileStats.name));
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     // Create the directory if it doesn't exist //
@@ -24,29 +28,44 @@ module.exports.transform = function (inputPath, outputPath, relativePath, fileSt
     mkdirp.sync(destinationBase);
 
 
+    // ~~~~~~~~~~~~~~~~~ //
+    // Find a compressor //
+    // ~~~~~~~~~~~~~~~~~ //
+
+    var compressor = null;
+    for (var i = 0; i < compressors.length; i++) {
+        if (mimeType.match(compressors[i][1])) {
+            compressor = compressors[i][0];
+            break;
+        }
+    }
+
+
     // ~~~~~~~~~~~~~~~~ //
     // Process the file //
     // ~~~~~~~~~~~~~~~~ //
 
-    var compressor = compressors[mimeType];
-
-    // Straight copy if there is no compressor for it
-    if (!compressor) {
-        fs.createReadStream(fullSourcePath).pipe(fs.createWriteStream(fullDestinationPath));
-        next();
-        return;
-    }
+    // Start reading the file
+    var inputBuffer = fs.readFileSync(fullSourcePath);
 
     // Compress the file and write the new one
-    compressor.process(inputPath, relativePath, fileStats, mimeType, function (err, buffer) {
+    compressor.process(inputBuffer, function (err, outputs) {
         if (err) {
             console.error('Error processing file', err);
-            next();
-            return;
+            return next();
         }
 
-        // We're already async so just write sync
-        fs.writeFileSync(fullDestinationPath, buffer);
-        next();
+        outputs = Array.isArray(outputs) ? outputs : [outputs];
+
+        var bytesWritten = 0;
+
+        for (var i = 0; i < outputs.length; i++) {
+            fs.writeFileSync(fullDestinationPath, outputs[i]);
+            bytesWritten += outputs[i].byteLength || outputs[i].length;
+        }
+
+        var bytesSaved = inputBuffer.byteLength - bytesWritten;
+
+        callback(null, compressor, bytesSaved);
     });
 };

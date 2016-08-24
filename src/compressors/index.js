@@ -46,26 +46,34 @@ module.exports.transform = function (inputPath, outputPath, relativePath, fileSt
     // ~~~~~~~~~~~~~~~~ //
 
     // Start reading the file
-    var inputBuffer = fs.readFileSync(fullSourcePath);
+    fs.readFile(fullSourcePath, function (err, inputBuffer) {
+        // Compress the file and write the new one
+        compressor.process(inputBuffer, function (err, outputs) {
+            if (err) {
+                console.error('Error processing file', err);
+                return next();
+            }
 
-    // Compress the file and write the new one
-    compressor.process(inputBuffer, function (err, outputs) {
-        if (err) {
-            console.error('Error processing file', err);
-            return next();
-        }
+            outputs = Array.isArray(outputs) ? outputs : [outputs];
 
-        outputs = Array.isArray(outputs) ? outputs : [outputs];
+            var bytesWritten = 0;
+            var numWritten = 0;
 
-        var bytesWritten = 0;
+            for (var i = 0; i < outputs.length; i++) {
+                (function (original) {
+                    fs.writeFile(fullDestinationPath, outputs[i], function (err) {
+                        if (!err) {
+                            bytesWritten += original.byteLength || original.length;
+                        }
 
-        for (var i = 0; i < outputs.length; i++) {
-            fs.writeFileSync(fullDestinationPath, outputs[i]);
-            bytesWritten += outputs[i].byteLength || outputs[i].length;
-        }
-
-        var bytesSaved = inputBuffer.byteLength - bytesWritten;
-
-        callback(null, compressor, bytesSaved);
+                        if (++numWritten === outputs.length) {
+                            // We're done
+                            var bytesSaved = inputBuffer.byteLength - bytesWritten;
+                            callback(null, compressor, bytesSaved);
+                        }
+                    });
+                })(outputs[i]);
+            }
+        });
     });
 };

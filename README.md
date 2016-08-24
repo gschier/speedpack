@@ -4,7 +4,18 @@ _NOTE: Do not use this yet please_
 
 Speedpack is a command line tool to automatically compress and optimize a static website.
 
-![Speedpack CLI](http://imgur.com/download/joBE67Z)
+```
+$ speedpack _dist
+packing [####################] 100%
+Finished in 5070ms
+Compressed:
+  File: 51 -> saved 0 bytes
+  Image: 31 -> saved 2922113 bytes
+  JavaScript: 1 -> saved 473 bytes
+  CSS: 3 -> saved 6031 bytes
+  -------------------------------
+  Total: 86 -> saved 2928617 bytes
+```
 
 
 ## Installation

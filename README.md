@@ -1,6 +1,19 @@
 # Speedpack
 
-Speedpack is a cli for compressing static websites.
+Speedpack is meant to be a simple and user friendly tool to help fix common problems reported by
+[Google Page Speed Insights](https://developers.google.com/speed/pagespeed/). So far, it can do
+the following.
+
+- image compression
+- css compression
+- javascript compression
+
+And in the near future...
+
+- guided CLI that saves preferences to a config file
+- javascript and css concatenation (detect nearby items in HTML and concat them)
+- show cool stats on how much was improved
+- suggest fixes that should not be handled by this tool (missing title tags, etc)
 
 
 ## Installation
@@ -8,6 +21,7 @@ Speedpack is a cli for compressing static websites.
 ```bash
 npm install -g speedpack
 ```
+
 
 ## Usage
 

@@ -2,54 +2,51 @@ var mime = require('mime');
 var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
-var compressors = [
-    require('./image'),
-    require('./css'),
-    require('./js')
-];
 
-module.exports.transform = function (fullDirectoryPath, relativePath, fileStats, next) {
-    var fullPath = path.join(fullDirectoryPath, relativePath, fileStats.name);
-    var mimeType = mime.lookup(fullPath);
-    var numParsers = 0;
+var compressors = {
+    'application/javascript': require('./js'),
+    'text/css': require('./css'),
+    'image/png': require('./image')
+};
 
-    var compress = function (i) {
-        var compressor = compressors[i];
 
-        if (!compressor) {
-            // We done
-            if (numParsers === 0) {
-                // No compressors found
-            }
+module.exports.transform = function (inputPath, outputPath, relativePath, fileStats, next) {
+    var fullSourcePath = path.join(inputPath, relativePath, fileStats.name);
+    var mimeType = mime.lookup(fullSourcePath);
+    var destinationBase = path.join(outputPath, relativePath);
+    var fullDestinationPath = path.resolve(path.join(destinationBase, fileStats.name));
 
-            return next();
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+    // Create the directory if it doesn't exist //
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+    // This should be fast so just do it sync and avoid complexity
+    mkdirp.sync(destinationBase);
+
+
+    // ~~~~~~~~~~~~~~~~ //
+    // Process the file //
+    // ~~~~~~~~~~~~~~~~ //
+
+    var compressor = compressors[mimeType];
+
+    // Straight copy if there is no compressor for it
+    if (!compressor) {
+        fs.createReadStream(fullSourcePath).pipe(fs.createWriteStream(fullDestinationPath));
+        next();
+        return;
+    }
+
+    // Compress the file and write the new one
+    compressor.process(inputPath, relativePath, fileStats, mimeType, function (err, buffer) {
+        if (err) {
+            console.error('Error processing file', err);
+            next();
+            return;
         }
 
-        if (!mimeType.match(compressor.mimeTypes)) {
-            // Skip this compressor
-            return compress(i + 1);
-        }
-
-        numParsers++;
-
-        compressor.process(fullDirectoryPath, relativePath, fileStats, mimeType, function (err, buffer) {
-            if (err) {
-                console.warn('ERROR', err);
-            } else {
-                var newBase = path.join('./_slim', relativePath);
-                var newPath = path.resolve(path.join(newBase, fileStats.name));
-
-                mkdirp(newBase, function () {
-                    fs.writeFile(newPath, buffer, function () {
-                        console.log('WROTE', fileStats.name);
-                    });
-                });
-            }
-        });
-
-        // Next one, before the other one even finishes.
-        compress(i + 1);
-    };
-
-    compress(0);
+        // We're already async so just write sync
+        fs.writeFileSync(fullDestinationPath, buffer);
+        next();
+    });
 };

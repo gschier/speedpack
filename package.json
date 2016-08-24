@@ -9,15 +9,16 @@
   "author": "Gregory Schier <greg@schier.co>",
   "license": "MIT",
   "dependencies": {
+    "commander": "^2.9.0",
     "csso": "^2.2.1",
     "imagemin": "^5.2.2",
     "imagemin-mozjpeg": "^6.0.0",
     "imagemin-pngquant": "^5.0.0",
     "mime": "^1.3.4",
     "mkdirp": "latest",
+    "progress": "^1.1.8",
     "uglify-js": "^2.7.3",
-    "walk": "^2.3.9",
-    "yargs": "^5.0.0"
+    "walk": "^2.3.9"
   },
   "engines": {
     "node": ">=4"

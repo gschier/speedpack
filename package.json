@@ -2,6 +2,10 @@
   "name": "speedback",
   "version": "0.0.4",
   "description": "Automatically compress and optimize a static website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gschier/speedpack"
+  },
   "bin": {
     "speedpack": "./bin/cli"
   },

@@ -52,7 +52,7 @@ module.exports.transform = function (inputPath, outputPath, relativePath, fileSt
     // Start reading the file
     fs.readFile(fullSourcePath, function (err, inputBuffer) {
         // Compress the file and write the new one
-        compressor.process(inputBuffer, function (err, outputs) {
+        compressor.process(inputBuffer, fullSourcePath, function (err, outputs) {
             if (err) {
                 console.error('Error processing file', err);
                 return next();

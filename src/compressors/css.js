@@ -2,10 +2,15 @@ var csso = require('csso');
 
 module.exports.fileType = 'CSS';
 
-module.exports.process = function (buffer, callback) {
-    var results = csso.minify(buffer.toString(), {sourceMap: 'file'});
-    var minified = results.css;
-    var sourceMap = results.map.toString();
+module.exports.process = function (buffer, fullPath, callback) {
+    var str = buffer.toString();
 
-    callback(null, minified);
+    // Guess if already compressed
+    if (fullPath.match(/\.min\.css$/) || str.split('\n').length < 10) {
+        return callback(null, str);
+    }
+
+    var results = csso.minify(str, {sourceMap: 'file'});
+
+    callback(null, results.css);
 };

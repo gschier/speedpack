@@ -4,7 +4,7 @@
 
 module.exports.fileType = 'File';
 
-module.exports.process = function (buffer, callback) {
+module.exports.process = function (buffer, fullPath, callback) {
     callback(null, buffer);
 };
 

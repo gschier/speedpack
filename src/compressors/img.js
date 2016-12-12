@@ -6,7 +6,7 @@ var imageminPngquant = require('imagemin-pngquant');
 
 module.exports.fileType = 'Image';
 
-module.exports.process = function (buffer, callback) {
+module.exports.process = function (buffer, fullPath, callback) {
     imagemin.buffer(buffer, {
         plugins: [
             imageminGifsicle(),

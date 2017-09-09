@@ -15,10 +15,10 @@ module.exports.process = function (buffer, fullPath, callback) {
             imageminPngquant({quality: '65-80'})
         ]
     }).then(function (data) {
-        console.log('HELLO', fullPath);
         callback(null, data);
     }, function (err) {
-        console.log('ERR', fullPath, err);
+        console.warn('Failed to compress image. Leaving as is:', err);
+        callback(null, buffer);
     });
 };
 

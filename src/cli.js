@@ -67,7 +67,7 @@ module.exports.go = function () {
     walker.on('end', function () {
         var progress = new ProgressBar('packing [:bar] :percent', {
             total: allPaths.length,
-            width: 20,
+            width: 40,
             complete: '#',
             incomplete: '-'
         });

@@ -7,6 +7,7 @@ var compressors = [
     [require('./js'), /^(application|text)\/javascript$/],
     [require('./css'), /^text\/css$/],
     [require('./img'), /^image\/.*$/],
+    [require('./xml'), /^(application|text)\/xml$/],
 
     // Catch-all that just copies the file
     [require('./copier'), /.*/]

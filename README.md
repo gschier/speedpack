@@ -9,12 +9,12 @@ $ speedpack _dist
 packing [####################] 100%
 Finished in 5070ms
 Compressed:
-  File: 51 -> saved 0 bytes
-  Image: 31 -> saved 2922113 bytes
-  JavaScript: 1 -> saved 473 bytes
-  CSS: 3 -> saved 6031 bytes
+  File: 169 -> saved 0.00 Bytes (0%)
+  JavaScript: 1 -> saved 367.97 KB (0.356%)
+  Image: 4 -> saved 1.22 MB (0.145%)
+  CSS: 1 -> saved 397.14 KB (0.304%)
   -------------------------------
-  Total: 86 -> saved 2928617 bytes
+  Total: 175 -> saved 1.97 MB (0.550%)
 ```
 
 

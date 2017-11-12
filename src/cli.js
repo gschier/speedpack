@@ -4,6 +4,7 @@ var walk = require('walk');
 var compressors = require('./compressors');
 var ProgressBar = require('progress');
 var version = require('../package.json').version;
+var filesize = require('file-size');
 
 
 module.exports.go = function () {
@@ -66,7 +67,7 @@ module.exports.go = function () {
     walker.on('end', function () {
         var progress = new ProgressBar('packing [:bar] :percent', {
             total: allPaths.length,
-            width: 20,
+            width: 40,
             complete: '#',
             incomplete: '-'
         });
@@ -137,11 +138,12 @@ module.exports.go = function () {
 };
 
 function printFileTypeResult (fileType, result) {
-    var bytesSaved = result.readBytes - result.writtenBytes;
-    var percentSaved = result.writtenBytes / result.readBytes;
+    var bytesSaved = result.readBytes - result.writtenBytes
+    var storageSaved = filesize(bytesSaved).human('jedec');
+    var percentSaved = bytesSaved ? (result.writtenBytes / result.readBytes).toFixed(3) : '0';
 
     console.log(
         '  ' + fileType + ': ' + result.count +
-        ' -> saved ' + bytesSaved + ' bytes (' + percentSaved + ')'
+        ' -> saved ' + storageSaved + ' (' + percentSaved + '%)'
     );
 }

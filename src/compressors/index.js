@@ -5,9 +5,10 @@ var mkdirp = require('mkdirp');
 
 var compressors = [
     [require('./js'), /^(application|text)\/javascript$/],
+    [require('./json'), /^(application|text)\/json$/],
+    [require('./xml'), /^(application|text)\/xml$/],
     [require('./css'), /^text\/css$/],
     [require('./img'), /^image\/.*$/],
-    [require('./json'), /^(application|text)\/json$/],
     [require('./html'), /^text\/html$/],
 
     // Catch-all that just copies the file

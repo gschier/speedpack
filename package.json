@@ -16,6 +16,7 @@
     "commander": "^2.9.0",
     "csso": "^2.2.1",
     "file-size": "^1.0.0",
+    "html-minifier": "^3.5.6",
     "imagemin": "^5.2.2",
     "imagemin-gifsicle": "^5.1.0",
     "imagemin-jpegtran": "^5.0.2",

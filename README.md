@@ -28,14 +28,17 @@ npm install -g speedpack
 ## More Details
 
 Speedpack is meant to be a simple and user friendly tool to help fix common problems reported by
-[Google Page Speed Insights](https://developers.google.com/speed/pagespeed/). So far, it can do
-the following.
+[Google Page Speed Insights](https://developers.google.com/speed/pagespeed/). So far, it can compress
+the following:
 
-- image compression
-- css compression
-- javascript compression
+- `CSS`
+- `HTML`
+- Images (`PNG`, `JPG`, `SVG`, `GIF`)
+- `JS`
+- `JSON`
+- `XML`
 
-And in the near future...
+And in the near future, it will:
 
 - guided CLI that saves preferences to a config file
 - javascript and css concatenation (detect nearby items in HTML and concat them)

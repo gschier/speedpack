@@ -24,6 +24,7 @@
     "imagemin-optipng": "^5.2.0",
     "imagemin-pngquant": "latest",
     "imagemin-svgo": "^5.1.0",
+    "jsonminify": "^0.4.1",
     "mime": "^1.3.4",
     "mkdirp": "latest",
     "progress": "^1.1.8",

@@ -12,7 +12,7 @@ module.exports.process = function (buffer, fullPath, callback) {
       imageminGifsicle(),
       imageminSvgo(),
       imageminMozjpeg({}),
-      imageminPngquant({ quality: [65, 80] }),
+      imageminPngquant({ quality: [0.65, 0.8] }),
     ],
   }).then(function (data) {
     callback(null, data);
